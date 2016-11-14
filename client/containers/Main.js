@@ -6,12 +6,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { Link } from 'react-router'
+import Menu from '../components/Menu/Menu'
 
 class Main extends Component {
     render() {
         return (
-            <div>Hello, world! <Link to="/test">/test</Link></div>
+            <div>
+                <Menu/>
+                <div>/main</div>
+            </div>
         )
     }
 }

@@ -6,10 +6,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
+import Menu from '../components/Menu/Menu'
+
 class Test extends Component {
     render() {
         return (
-            <div>Test, world!</div>
+            <div>
+                <Menu/>
+                <div>/test</div>
+            </div>
         )
     }
 }
