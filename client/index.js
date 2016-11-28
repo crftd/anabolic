@@ -7,20 +7,21 @@ import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
 import React from 'react'
 import { Router, hashHistory } from 'react-router'
-import { syncHistoryWithStore } from 'react-router-redux'
 
 import routes from './routes'
 import store from './store'
+import DevTools from './containers/devTools'
 
 import 'index.html'
 
-//const history = syncHistoryWithStore(browserHistory, store);
-
 ReactDOM.render(
   <Provider store={store}>
-      <Router history={hashHistory}>
-          {routes}
-      </Router>
+      <div>
+          <Router history={hashHistory}>
+              {routes}
+          </Router>
+          {process.env.NODE_ENV === 'development' ? <DevTools/> : null}
+      </div>
   </Provider>,
   document.getElementById('app')
 );
