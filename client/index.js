@@ -6,7 +6,7 @@
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
 import React from 'react'
-import { Router, hashHistory } from 'react-router'
+import { HashRouter } from 'react-router'
 
 import routes from './routes'
 import store from './store'
@@ -15,9 +15,9 @@ import DevTools from './containers/devTools'
 ReactDOM.render(
   <Provider store={store}>
       <div>
-          <Router history={hashHistory}>
+          <HashRouter hashType="hashbang">
               {routes}
-          </Router>
+          </HashRouter>
           {process.env.NODE_ENV === 'development' ? <DevTools/> : null}
       </div>
   </Provider>,
