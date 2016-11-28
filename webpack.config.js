@@ -81,10 +81,18 @@ const loaders = [
         query: { presets: ['es2015'] }
     },
     {
-        test: /\.(jpe?g|png|gif)$/i,
+        test: /.*\.(gif|png|jpe?g|svg)$/i,
         loaders: [
-            'file-loader?name=images/[name].[ext]',
-            'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
+            'file?hash=sha512&digest=hex&name=[hash].[ext]',
+            {
+                loader: 'image-webpack',
+                query: {
+                    progressive: true,
+                    mozjpeg: {
+                        quality: 100
+                    }
+                }
+            }
         ]
     }
 ];
