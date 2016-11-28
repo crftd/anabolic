@@ -12,8 +12,6 @@ import routes from './routes'
 import store from './store'
 import DevTools from './containers/devTools'
 
-import 'index.html'
-
 ReactDOM.render(
   <Provider store={store}>
       <div>

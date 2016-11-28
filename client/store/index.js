@@ -12,7 +12,7 @@ import objectAssign from 'object-assign'
 import DevTools from '../containers/devTools'
 import reducers from '../reducers'
 
-let initialState = {};
+const initialState = {};
 
 const rootReducer = combineReducers(objectAssign({}, reducers, {
     routing: routerReducer
