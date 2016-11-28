@@ -3,7 +3,7 @@ const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const pcss_cssnext = require('postcss-cssnext');
-const pcss_initial = require('postcss-initial');
+const pcss_normalize = require('postcss-normalize');
 const pcss_clearfix = require('postcss-clearfix');
 const pcss_fonts = require('postcss-font-magician');
 const precss = require('precss');
@@ -100,5 +100,5 @@ module.exports = {
   module: { preLoaders, loaders },
   resolve,
   devServer,
-  postcss: () => [pcss_cssnext, precss, pcss_clearfix, pcss_initial, pcss_fonts]
+  postcss: () => [pcss_cssnext, precss, pcss_clearfix, pcss_normalize, pcss_fonts]
 };
