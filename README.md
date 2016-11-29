@@ -6,6 +6,7 @@ For universal \ isomorphic application we created [post3ree-boilerplate](https:/
 ## Stack:
 * Webpack 2
 * React
+* React-Router 4
 * Redux
 * Babel
 
