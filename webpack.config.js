@@ -1,6 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlPlugin = require('html-webpack-plugin');
+const FaviconPlugin = require('favicons-webpack-plugin');
 
 const postCSSNext = require('postcss-cssnext');
 const postCSSNormalize = require('postcss-normalize');
@@ -46,6 +48,15 @@ const plugins = [
     new ExtractTextPlugin({
         filename: 'app.css',
         allChunks: true
+    }),
+
+    new FaviconPlugin({
+        logo: './favicon.png',
+        prefix: 'icons/'
+    }),
+
+    new HtmlPlugin({
+        template: './index.html'
     })
 ];
 const preLoaders = [
@@ -56,13 +67,6 @@ const preLoaders = [
     }
 ];
 const loaders = [
-    {
-        test: /\.html$/,
-        loader: 'file',
-        query: {
-            name: '[name].[ext]'
-        }
-    },
     {
         test: /\.pcss$/i,
         loader: ExtractTextPlugin.extract({
