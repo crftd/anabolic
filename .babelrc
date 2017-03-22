@@ -1,4 +1,9 @@
 {
-  "presets": ["es2015", "stage-0", "react"],
-  "plugins": ["transform-object-rest-spread", "react-hot-loader/babel", "transform-class-properties"]
+  "env": {
+	"development": {
+	  "presets": [
+		"react-hmre"
+	  ]
+	}
+  }
 }

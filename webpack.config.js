@@ -1,122 +1,167 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlPlugin = require('html-webpack-plugin');
-const FaviconPlugin = require('favicons-webpack-plugin');
 
-const postCSSNext = require('postcss-cssnext');
-const postCSSNormalize = require('postcss-normalize');
-const postCSSClearfix = require('postcss-clearfix');
-const postCSSFonts = require('postcss-font-magician');
-const postCSSPreCSS = require('precss');
-
+const sourcePath = path.join(__dirname, './src');
+const staticsPath = path.join(__dirname, './static');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
 
-const devtool = isProd ? 'hidden-source-map' : 'cheap-eval-source-map';
-const context = path.join(__dirname, './client');
-const entry = {
-    js: './index.js',
-    vendor: ['react']
-};
-const output = {
-    path: path.join(__dirname, './static'),
-    filename: 'bundle.js'
-};
-const plugins = [
-    new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks: Infinity,
-        filename: 'vendor.bundle.js'
-    }),
-
-    new webpack.LoaderOptionsPlugin({
-        minimize: true,
-        debug: false
-    }),
-
-    new webpack.optimize.UglifyJsPlugin({
-        compress: { warnings: false },
-        output: { comments: false },
-        sourceMap: false
-    }),
-
-    new webpack.DefinePlugin({
-        'process.env': { NODE_ENV: JSON.stringify(nodeEnv) }
-    }),
-
-    new ExtractTextPlugin({
-        filename: 'app.css',
-        allChunks: true
-    }),
-
-    new FaviconPlugin({
-        logo: './favicon.png',
-        prefix: 'icons/'
-    }),
-
-    new HtmlPlugin({
-        template: './index.html'
-    })
-];
-const preLoaders = [
-    {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        loader: ['eslint']
-    }
-];
-const loaders = [
-    {
-        test: /\.pcss$/i,
-        loader: ExtractTextPlugin.extract({
-            notExtractLoader: 'style-loader',
-            loader: 'css?modules&importLoaders=1&localIdentName=[name]_[local]__[hash:base26]!postcss'
-        })
+const config = {
+    devtool: isProd ? '' : 'eval-source-map',
+    context: sourcePath,
+    entry: {
+        js: './index.js',
+        vendor: ['react']
     },
-    {
-        test: /\.css$/,
-        loaders: ['style', 'css']
+    output: {
+        path: staticsPath,
+        filename: 'bundle.js'
     },
-    {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        loader: ['babel'],
-        query: { presets: ['es2015'] }
+    resolve: {
+        extensions: ['.js', '.jsx'],
+        modules: [
+            path.resolve(__dirname, 'node_modules'),
+            sourcePath
+        ]
     },
-    {
-        test: /.*\.(gif|png|jpe?g|svg)$/i,
-        loaders: [
-            'file?hash=sha512&digest=hex&name=[hash].[ext]',
+    devServer: {
+        contentBase: './src',
+        historyApiFallback: true,
+        host: '0.0.0.0',
+        port: 3000,
+        compress: isProd,
+        inline: !isProd,
+        hot: !isProd,
+        stats: {
+            assets: true,
+            children: false,
+            chunks: false,
+            hash: false,
+            modules: false,
+            publicPath: false,
+            timings: true,
+            version: false,
+            warnings: true,
+            colors: {
+                green: '\u001b[32m',
+            }
+        },
+    },
+    module: {
+        rules: [
             {
-                loader: 'image-webpack',
-                query: {
-                    progressive: true,
-                    mozjpeg: {
-                        quality: 100
+                test: /\.js$/,
+                enforce: 'pre',
+                include: sourcePath,
+                loader: 'eslint-loader'
+            },
+            {
+                test: /\.js$/,
+                include: sourcePath,
+                loader: 'babel-loader',
+                options: {
+                    presets: ['es2015', 'react', 'stage-0']
+                }
+            },
+            {
+                test: /\.html$/,
+                include: sourcePath,
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[ext]'
                     }
                 }
+            },
+            {
+                test: /\.pcss$/,
+                include: sourcePath,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
+                        {
+                            loader: 'css-loader',
+                            query: {
+                                modules: true,
+                                sourceMaps: true,
+                                localIdentName: '[path]___[name]__[local]___[hash:base64:5]'
+                            }
+                        },
+                        {
+                            loader: 'postcss-loader'
+                        }
+                    ]
+                })
+            },
+            {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
+            },
+            {
+                test: /.*\.(gif|png|jpe?g|svg)$/i,
+                use: [
+                    'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+                    {
+                        loader: 'image-webpack-loader',
+                        query: {
+                            mozjpeg: {
+                                progressive: true,
+                            },
+                            gifsicle: {
+                                interlaced: false,
+                            },
+                            optipng: {
+                                optimizationLevel: 4,
+                            },
+                            pngquant: {
+                                quality: '75-90',
+                                speed: 3,
+                            }
+                        }
+                    }
+                ]
             }
         ]
-    }
-];
-const resolve = {
-    extensions: ['', '.js', '.jsx'],
-    modules: [
-        path.resolve('./client'),
-        'node_modules'
+    },
+    plugins: [
+        new ExtractTextPlugin('styles.css'),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            minChunks: Infinity,
+            filename: 'vendor.bundle.js'
+        }),
+        new webpack.DefinePlugin({
+            __DEV__: process.env.NODE_ENV === 'development'
+        }),
+        new webpack.NamedModulesPlugin(),
     ]
 };
-const devServer = { contentBase: './client' };
 
-module.exports = {
-    devtool,
-    entry,
-    context,
-    output,
-    plugins,
-    module: { preLoaders, loaders },
-    resolve,
-    devServer,
-    postcss: () => [postCSSNext, postCSSPreCSS, postCSSClearfix, postCSSNormalize, postCSSFonts]
-};
+if (isProd) {
+    config.plugins.push(
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false,
+                screw_ie8: true,
+                conditionals: true,
+                unused: true,
+                comparisons: true,
+                sequences: true,
+                dead_code: true,
+                evaluate: true,
+                if_return: true,
+                join_vars: true,
+            },
+            output: {
+                comments: false,
+            },
+        })
+    )
+} else {
+    config.plugins.push(
+        new webpack.HotModuleReplacementPlugin()
+    );
+}
+
+module.exports = config;
