@@ -1,20 +1,5 @@
-# anabolic
-React static app starter kit
+# THIS PROJECT GOT DELETED
 
-For universal \ isomorphic application we created [post3ree-boilerplate](https://github.com/hex22a/post3ree-boilerplate). Check this out!
+We deleted this project since we don't care about it anymore. If you're a looking for some kind of react boilerplate or just something to start with take a look at [Create React App](https://github.com/facebook/create-react-app)
 
-## Stack:
-* Webpack 2
-* React
-* React-Router 4
-* Redux
-* Babel
-
-## Commands:
-`npm run start` - start webpack dev server
-
-`npm run build` - build static
-
----
-
-##### [Crafted.](http://stdio.digital)
+**PLEASE DO NOT USE PREVIUS VERSIONS OF THIS BOILERPLATE DUE TO SECURITY ISSUES**
